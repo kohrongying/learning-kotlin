@@ -17,11 +17,15 @@ class HomeTimelineFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.home_timeline_fragment, container, false)
+        val view = inflater.inflate(R.layout.home_timeline_fragment, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button.setOnClickListener { view -> view.findNavController().navigate(R.id.postDetailFragment) }
+        val action = HomeTimelineFragmentDirections.actionHomeTimelineFragmentToPostDetailFragment()
+        button.setOnClickListener {
+            view -> view.findNavController().navigate(action)
+        }
     }
 }
