@@ -29,14 +29,7 @@ class HomeTimelineFragment : Fragment() {
 
         binding.setLifecycleOwner(this)
 
-        // Can be removed due to Data Binding
-//        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
-//            binding.scoreText.text = newScore?.toString()
-//        })
-//
-//        binding.addOneButton.setOnClickListener {
-//            viewModel.addOne()
-//        }
+
 
 
         // Bind button to nav
@@ -44,8 +37,6 @@ class HomeTimelineFragment : Fragment() {
         binding.button.setOnClickListener {
                 view -> view.findNavController().navigate(action)
         }
-
-
 
         return binding.root
     }
