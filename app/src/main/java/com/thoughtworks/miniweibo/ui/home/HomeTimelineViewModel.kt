@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.miniweibo.api.WeiboApi
-import retrofit2.Call
-import retrofit2.Response
-import javax.security.auth.callback.Callback
+import kotlinx.coroutines.*
 
 class HomeTimelineViewModel : ViewModel() {
     private val _score = MutableLiveData<Int>()
@@ -15,14 +13,10 @@ class HomeTimelineViewModel : ViewModel() {
     val score : LiveData<Int>
         get() = _score
 
-    init {
-        Log.i("HomeTimelineViewModel", "HomeTimeline ViewModel created")
-        _score.value = 0
-    }
-
     override fun onCleared() {
         super.onCleared()
         Log.i("HomeTimelineViewModel", "HomeTimeline ViewModel destroyed")
+        coroutineJob?.cancel()
     }
 
     private val _response = MutableLiveData<String>()
@@ -30,22 +24,32 @@ class HomeTimelineViewModel : ViewModel() {
     val response : LiveData<String>
         get() = _response
 
+
+    init {
+        Log.i("HomeTimelineViewModel", "HomeTimeline ViewModel created")
+        _score.value = 0
+        getComments()
+    }
+
+
+    private var coroutineJob : Job? = null
+
     private fun getComments() {
-        WeiboApi.retrofitService.getComments().enqueue( object: Callback,
-            retrofit2.Callback<String> {
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                _response.value = "Failure: " + t.message
-            }
+        coroutineJob = CoroutineScope(Dispatchers.IO).launch {
+            var commentList = WeiboApi.retrofitService.getComments()
+            withContext(Dispatchers.Main) {
+                try {
+                    _response.value = "Success: ${commentList.size} comments retrieved!"
 
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                _response.value = response.body()
+                } catch (t:Throwable) {
+                    _response.value = "Failure: " + t.message
+                }
             }
-
-        })
+        }
     }
 
     fun addOne() {
-        _score.value = (score.value)?.plus(1)
+        _score.value = (_score.value)?.plus(1)
     }
 
 }
