@@ -14,17 +14,7 @@ Tip:
 * SafeArgs is the one responsible for generating Directions class
 * Ensure `androidX` is set to true in `gradle.properties`
 
-# 3. Setting up API Service
-Learn [Retrofit](https://square.github.io/retrofit/)
-
-Tip:
-* Create retrofit instance
-* Create private service that uses retrofit instance then an API object to expose service
-* Call the API in ViewModel
-* Use Coroutines when using API 
-
-
-# 4. Data binding
+# 3. Data binding
 Data Binding is a concept used to connect layout to activity/fragment (acts as the glue). 
 
 Binding the view to the layout allows you to remove the findViewById method calls which can be potentially intensive, while binding data to the layout allows us to use data variable in the layout.
@@ -58,7 +48,7 @@ binding.button.setOnClickListener { //some function
 (ok i didn't even know there was a difference. I only knew binding. lol.)
 
 
-# 5. View Models and LiveData Binding
+# 4. View Models and LiveData Binding
 To prevent any UI-related data to be destroyed when android destroys and recreates the UI controller (eg. rotating your phone), we have to store data in [View Models](https://developer.android.com/topic/libraries/architecture/viewmodel) instead of in the Fragment/Activity.
 
 
@@ -121,6 +111,46 @@ can be replaced by these lines in the layout file:
     ... />
 ```
 
+
+# 5. Setting up API Service
+Learn [Retrofit](https://square.github.io/retrofit/)
+
+Tip:
+* Create retrofit instance
+* Create private service that uses retrofit instance then an API object to expose service
+* Use Moshi to convert from JSON to Model
+* Call the API in ViewModel
+* Use Coroutines to replace enqueue method
+```kotlin
+WeiboApi.retrofitService.getComments().enqueue( object: Callback<List<Comment>>  {
+    override fun onFailure(call: Call<List<Comment>>, t: Throwable) {
+        _response.value = "Failure: " + t.message
+    }
+
+    override fun onResponse(call: Call<List<Comment>>, response: Response<List<Comment>>) {
+        _response.value = "Success: ${response.body()?.size} comments retrieved!"
+    }
+
+})
+```
+to a much shorter and cleaner version:
+```kotlin
+private var coroutineJob : Job? = null
+
+private fun getComments() {
+    coroutineJob = CoroutineScope(Dispatchers.IO).launch {
+        var commentList = WeiboApi.retrofitService.getComments()
+        withContext(Dispatchers.Main) {
+            try {
+                _response.value = "Success: ${commentList.size} comments retrieved!"
+            } catch (t:Throwable) {
+                _response.value = "Failure: " + t.message
+            }
+        }
+    }
+}
+```
+* Tip: To use repository to store data
 
 # 6. Coroutines
 * Used for API calls
