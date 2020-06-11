@@ -29,14 +29,14 @@ class HomeTimelineFragment : Fragment() {
 
         binding.setLifecycleOwner(this)
 
-        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.scoreText.text = newScore?.toString()
-        })
-
-
-        binding.addOneButton.setOnClickListener {
-            viewModel.addOne()
-        }
+        // Can be removed due to Data Binding
+//        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
+//            binding.scoreText.text = newScore?.toString()
+//        })
+//
+//        binding.addOneButton.setOnClickListener {
+//            viewModel.addOne()
+//        }
 
 
         // Bind button to nav
