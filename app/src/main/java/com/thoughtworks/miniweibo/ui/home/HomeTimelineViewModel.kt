@@ -9,9 +9,16 @@ import kotlinx.coroutines.*
 
 class HomeTimelineViewModel : ViewModel() {
     private val _score = MutableLiveData<Int>()
-
     val score : LiveData<Int>
         get() = _score
+
+    private val _comments = MutableLiveData<String>()
+    val getComments : LiveData<String>
+        get() = _comments
+
+    private val _timeline = MutableLiveData<String>()
+    val getTimeline : LiveData<String>
+        get() = _timeline
 
     override fun onCleared() {
         super.onCleared()
@@ -19,17 +26,13 @@ class HomeTimelineViewModel : ViewModel() {
         coroutineJob?.cancel()
     }
 
-    private val _response = MutableLiveData<String>()
-
-    val response : LiveData<String>
-        get() = _response
-
-
     init {
         Log.i("HomeTimelineViewModel", "HomeTimeline ViewModel created")
         _score.value = 0
-        getComments()
+        getTimeline()
+//        getComments()
     }
+
 
 
     private var coroutineJob : Job? = null
@@ -39,10 +42,24 @@ class HomeTimelineViewModel : ViewModel() {
             var commentList = WeiboApi.retrofitService.getComments()
             withContext(Dispatchers.Main) {
                 try {
-                    _response.value = "Success: ${commentList.size} comments retrieved!"
+                    _comments.value = "Success: ${commentList.size} comments retrieved!"
 
                 } catch (t:Throwable) {
-                    _response.value = "Failure: " + t.message
+                    _comments.value = "Failure: " + t.message
+                }
+            }
+        }
+    }
+
+    private fun getTimeline() {
+        coroutineJob = CoroutineScope(Dispatchers.IO).launch {
+            var timelineList = WeiboApi.retrofitService.getTimeline()
+            withContext(Dispatchers.Main) {
+                try {
+                    _timeline.value = "Success: ${timelineList.size} comments retrieved!"
+
+                } catch (t:Throwable) {
+                    _timeline.value = "Failure: " + t.message
                 }
             }
         }

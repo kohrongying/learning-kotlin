@@ -23,13 +23,12 @@ class HomeTimelineFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = DataBindingUtil.inflate(inflater,  R.layout.home_timeline_fragment, container, false)
 
         binding.viewModel = viewModel
 
         binding.setLifecycleOwner(this)
-
-
 
 
         // Bind button to nav
