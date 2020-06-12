@@ -150,8 +150,13 @@ private fun getComments() {
     }
 }
 ```
-* Tip: To use repository to store data
+* Tip: To use repository to store/manage data. Especially if there is data from the database to be used as cache. 
 
 # 6. Coroutines
 * Used for API calls
 * Used for Database transactions
+
+# 7. Recycler View
+
+Tip
+* Add plugin `kotlin-kapt` to use binding adapters

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.miniweibo.api.WeiboApi
+import com.thoughtworks.miniweibo.model.TimelinePost
 import kotlinx.coroutines.*
 
 class HomeTimelineViewModel : ViewModel() {
@@ -16,8 +17,8 @@ class HomeTimelineViewModel : ViewModel() {
     val getComments : LiveData<String>
         get() = _comments
 
-    private val _timeline = MutableLiveData<String>()
-    val getTimeline : LiveData<String>
+    private val _timeline = MutableLiveData<List<TimelinePost>>()
+    val getTimeline : LiveData<List<TimelinePost>>
         get() = _timeline
 
     override fun onCleared() {
@@ -30,9 +31,7 @@ class HomeTimelineViewModel : ViewModel() {
         Log.i("HomeTimelineViewModel", "HomeTimeline ViewModel created")
         _score.value = 0
         getTimeline()
-//        getComments()
     }
-
 
 
     private var coroutineJob : Job? = null
@@ -56,10 +55,10 @@ class HomeTimelineViewModel : ViewModel() {
             var timelineList = WeiboApi.retrofitService.getTimeline()
             withContext(Dispatchers.Main) {
                 try {
-                    _timeline.value = "Success: ${timelineList.size} comments retrieved!"
+                    _timeline.value = timelineList
 
                 } catch (t:Throwable) {
-                    _timeline.value = "Failure: " + t.message
+//                    _timeline.value = "Failure: " + t.message
                 }
             }
         }

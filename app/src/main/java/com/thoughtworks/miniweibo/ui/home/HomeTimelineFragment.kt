@@ -30,6 +30,7 @@ class HomeTimelineFragment : Fragment() {
 
         binding.setLifecycleOwner(this)
 
+        binding.postsGrid.adapter = PostGridAdapter()
 
         // Bind button to nav
         val action = HomeTimelineFragmentDirections.actionHomeTimelineFragmentToPostDetailFragment()

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="post"
+            type="com.thoughtworks.miniweibo.model.TimelinePost" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/postText"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{post.text}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="#小编说书#【《共有的习惯：18世纪英国的平民文化》历史再次照进现实】粮食骚乱中的民众为何守纪节制，很少趁火打劫？卖妻交易中的女方为何轻松得意，甚至非常开心？喧闹游行中的队列为何只是象征性羞辱，却无实质性伤害？光怪陆离的民众行为到底如何解读？\n18世纪的英国，父权衰落，法度废弛，社会急... http://m.weibo.cn/client/version" />
+
+        <TextView
+            android:id="@+id/repostCountText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{post.reposts_count}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/repostsText"
+            app:layout_constraintTop_toBottomOf="@+id/postText"
+            tools:text="100" />
+
+        <TextView
+            android:id="@+id/commentCountText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{post.comments_count}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/commentsText"
+            app:layout_constraintTop_toBottomOf="@+id/repostCountText"
+            tools:text="100" />
+
+        <TextView
+            android:id="@+id/attitudeCountText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{post.attitudes_count}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/attitudeText"
+            app:layout_constraintTop_toBottomOf="@+id/commentCountText"
+            tools:text="100" />
+
+        <TextView
+            android:id="@+id/repostsText"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Reposts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/postText" />
+
+        <TextView
+            android:id="@+id/commentsText"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="Comments"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/repostsText" />
+
+        <TextView
+            android:id="@+id/attitudeText"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="Attitude"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/commentsText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
