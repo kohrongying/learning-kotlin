@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thoughtworks.miniweibo.databinding.GridPostItemBinding
 import com.thoughtworks.miniweibo.model.TimelinePost
 
-class PostGridAdapter : ListAdapter<TimelinePost, PostGridAdapter.TimelinePostViewHolder>(DiffCallback){
+class PostGridAdapter(val clickListener: PostListener) : ListAdapter<TimelinePost, PostGridAdapter.TimelinePostViewHolder>(DiffCallback){
     class TimelinePostViewHolder(private var binding: GridPostItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(post: TimelinePost) {
+        fun bind(post: TimelinePost, clickListener: PostListener) {
             binding.post = post
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
     }
@@ -34,6 +35,10 @@ class PostGridAdapter : ListAdapter<TimelinePost, PostGridAdapter.TimelinePostVi
 
     override fun onBindViewHolder(holder: PostGridAdapter.TimelinePostViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(post)
+        holder.bind(post, clickListener)
     }
+}
+
+class PostListener(val clickListener: (id: String) -> Unit) {
+    fun onClick(post: TimelinePost) = clickListener(post.id)
 }

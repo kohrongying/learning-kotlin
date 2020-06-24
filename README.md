@@ -156,7 +156,71 @@ private fun getComments() {
 * Used for API calls
 * Used for Database transactions
 
+Tip
+* Can use LiveData
+* Use Coroutine Scope
+* Remember to cancel it in the `onCleared` method in ViewModel / whatever equivalent
+```kotlin
+coroutineJob = CoroutineScope(Dispatchers.IO).launch {
+    var commentList = WeiboApi.retrofitService.getComments()
+    withContext(Dispatchers.Main) {
+        try {
+            _comments.value = "Success: ${commentList.size} comments retrieved!"
+        } catch (t:Throwable) {
+            _comments.value = "Failure: " + t.message
+        }
+    }
+}
+```
+Launch a IO scope to do computationally heavy/long tasks then change back to main thread. 
+
 # 7. Recycler View
 
 Tip
 * Add plugin `kotlin-kapt` to use binding adapters
+* Set up onClick listener for Recycler View. 
+
+In RecyclerAdapter, set up a new listener class and allow the adapter to receive an instance of it as a class variable.
+```kotlin
+// Take in clickListener as part of the class variable
+class PostGridAdapter(val clickListener: PostListener)
+
+// Under ViewHolder - bind it
+fun bind(post: TimelinePost, clickListener: PostListener) {
+    binding.post = post
+    binding.clickListener = clickListener
+    binding.executePendingBindings()
+}
+
+override fun onBindViewHolder(holder: PostGridAdapter.TimelinePostViewHolder, position: Int) {
+    val post = getItem(position)
+    holder.bind(post, clickListener)
+}
+
+// Create a Listener class
+class PostListener(val clickListener: (id: String) -> Unit) {
+    fun onClick(post: TimelinePost) = clickListener(post.id)
+}
+
+```
+
+In Fragment, when instantiating the adapter, write the onClick logic here
+```kotlin
+// In Fragment
+binding.postsGrid.adapter = PostGridAdapter(PostListener {
+    id -> Toast.makeText(context, "${id}", Toast.LENGTH_LONG).show()
+})
+```
+
+In Layout xml file, add variable and bind to onclick.
+```kotlin
+// Add variable
+<variable
+    name="clickListener"
+    type="com.thoughtworks.miniweibo.ui.home.PostListener" />
+
+// Bind to layout / button
+<androidx.constraintlayout.widget.ConstraintLayout
+    ...
+    android:onClick="@{() -> clickListener.onClick(post)}">
+```
