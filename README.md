@@ -152,7 +152,14 @@ private fun getComments() {
 ```
 * Tip: To use repository to store/manage data. Especially if there is data from the database to be used as cache. 
 
+### Network Security
+* [Cert/Key Pinning](https://square.github.io/okhttp/4.x/okhttp/okhttp3/-certificate-pinner/) 
+    - ensures SSL Cert on server is valid and matches the hash signature the app is expecting
+    - everytime the SSL Cert is updated, the app has to be updated
+    - mainly for mobile. Not convenient for web due to cert renewal time
+
 # 6. Coroutines
+
 * Used for API calls
 * Used for Database transactions
 
@@ -224,3 +231,44 @@ In Layout xml file, add variable and bind to onclick.
     ...
     android:onClick="@{() -> clickListener.onClick(post)}">
 ```
+
+# 8. Adding Images
+Usually we load images using an image URL. In android, we have to download the image into a bitmap.
+
+```kotlin
+CoroutineScope(Dispatchers.IO).launch {
+    val url = URL(camera.image)
+    val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+    withContext(Dispatchers.Main) {
+        itemView.image_traffic.setImageBitmap(bmp)
+    }
+}
+```
+
+Tip
+* Remember to cancel the coroutine
+* Packages like Picasso and Glide are popular at handling images with a much simpler UI
+
+```kotlin
+Glide.with(itemView.context)
+    .load(camera.image)
+    .into(itemView.image_traffic);
+```
+
+Another library package, `Fresco`, has its own UI widget to be added to the layout. However, it comes with many options/modifications you can have. The good thing over other libraries is that it does memory management better. It also has webp and animated gifts support.
+
+# 9. Data Persistence and Security
+Android data storage security and encryption is a problem. 
+
+Room is a wrapper around SQLite, however, data in it is not encrypted. So, if a user has root access, he is able to access the data. This is unlike iOS where you have access to the iOS keychain. 
+
+To circumvent this in android, you have to encrypt sensitive data (credit card number / fingerprint username password / JWT tokens after a login) and then keep the key in KeyStore which can only store cryptographic keys.
+
+Use SharedPreferences to store key value, Room to store objects. 
+`EncryptedSharedPreferences`
+
+Another alternative is [Realm](https://realm.io/blog/realm-for-android/) which ships with its own database and comes with encryption out of the box. Downside is that as it comes with its own db, it is a few MB larger, than using Room.
+
+# Android Studio Tips
+* Drag and drop apk files (found in app> build> outputs) into android studio to see size of bundle
+* Multidex - solution to having more than 65535 methods. It is a default from API 29 (?) onwards
